@@ -1,0 +1,56 @@
+#!/bin/bash
+# Xubuntu 20.04 Tested
+
+chid=($(wmctrl -l | grep -i joplin | grep -v Chrom | awk '{print $1}')) 
+winid=($(wmctrl -l | grep -i joplin | grep -v Chrom | awk '{print $2}')) #Window ID
+
+usableid=($(printf %i $chid)) # Reformat for xdotools
+
+# check current if current window is joplin
+# Also Activator
+# curractivewin=($(printf %i $(wmctrl -l | grep -i joplin | grep -v Chrom | awk '{print $1}')))
+curractivewin=($(xdotool getwindowfocus))
+activate=1
+
+echo $curractivewin
+echo $usableid
+
+if [ $activate -eq '1' ]; then
+if [ "$curractivewin" == "$usableid" ]; then
+	#echo 'working'
+	wmctrl -s $winid # Swap to Workspace
+
+	rawinfo="$(xdotool getactivewindow getwindowgeometry $usableid| tail -2 | awk '{print $2}')" # Get window Raw info
+	
+	posraw=($(echo "$rawinfo" | head -1|tr ',' ' ')) #Splitting xpos and ypos into array
+	sizeraw=($(echo "$rawinfo" | tail -1|tr 'x' ' ')) #Splitting xsize and ysize into array
+	
+	# Adjust accordng to your button position relative to your window's absolute position
+	
+	tgtx="$((${posraw[0]} + ${sizeraw[0]} - 50 ))" 
+	tgty="$((${posraw[1]}+88))"
+	
+	# Bottom left corner of the joplin "typable text area" to start typing
+	tgtxr="$((${posraw[0]}+307))"
+	tgtyr="$((${posraw[1]}+(${sizeraw[1]}-47)))"
+	
+	# Store existing mouse position
+	
+	mouseraw=($(xdotool getmouselocation))
+	mousex=($(echo ${mouseraw[0]} | tr ':' ' '))
+	mousey=($(echo ${mouseraw[1]} | tr ':' ' '))
+	mousexraw=${mousex[1]}
+	mouseyraw=${mousey[1]}
+	
+	xdotool mousemove $tgtx $tgty
+	xdotool click 1
+	sleep 0.1
+	xdotool mousemove $tgtxr $tgtyr
+	xdotool click 1
+	
+	# Restore Mouse Position
+	xdotool mousemove $mousexraw $mouseyraw
+
+fi
+fi
+exit 0 

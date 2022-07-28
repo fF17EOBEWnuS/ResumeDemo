@@ -1,0 +1,4 @@
+#!/bin/bash
+export DISPLAY=:0
+export XDG_RUNTIME_DIR="/run/user/1000"
+xdotool keydown Control_L; xdotool key 'a'; xdotool keyup Control_L; xdotool keydown Shift_L; xdotool key backslash; xdotool keyup Shift_L

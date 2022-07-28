@@ -1,0 +1,13 @@
+#!/bin/bash
+
+while [ 1 ] 
+do
+	eval $(xdotool getmouselocation --shell)
+	xdotool mousemove $X $Y+=1
+	sleep 120
+	eval $(xdotool getmouselocation --shell)
+	xdotool mousemove $X $Y-=1
+	sleep 120
+done
+
+exit 0 

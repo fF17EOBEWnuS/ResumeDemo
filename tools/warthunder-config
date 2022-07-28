@@ -1,0 +1,4 @@
+#!/bin/sh
+
+# Fix Warthunder config prior to launch
+ cp ~/.scripts/warthunder-config/config.blk ~/.local/share/Steam/steamapps/common/War\ Thunder/

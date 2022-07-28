@@ -1,0 +1,7 @@
+#!/bin/sh
+
+journalctl -u ss-libev-obfs | tail -1 | grep -q "Connection reset by peer"
+if [ $? -eq 0 ]
+then
+	sudo systemctl restart ss-libev-obfs
+fi

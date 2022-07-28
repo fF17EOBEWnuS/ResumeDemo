@@ -1,0 +1,6 @@
+#!/bin/sh
+
+sudo systemctl restart ss-libev-41114.service
+sudo systemctl restart ss-libev-41115.service
+sudo systemctl restart ss-libev-41116.service
+

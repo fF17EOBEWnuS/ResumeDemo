@@ -1,0 +1,23 @@
+xhost +
+
+# Since the image is already installed;  Do not need to parse from the site again:
+# https://hub.docker.com/r/bestwu/wechat/
+
+docker start d843f63ff524
+#
+# To kill the instance:
+# docker kill d843f63ff524
+#
+#
+# Or Parse a fresh instance:
+#    docker run -d --name wechat --device /dev/snd \
+#    -v /tmp/.X11-unix:/tmp/.X11-unix \
+#    -v $HOME/WeChatFiles:/WeChatFiles \
+#    -e DISPLAY=unix$DISPLAY \
+#    -e XMODIFIERS=@im=fcitx \
+#    -e QT_IM_MODULE=fcitx \
+#    -e GTK_IM_MODULE=fcitx \
+#    -e AUDIO_GID=`getent group audio | cut -d: -f3` \
+#    -e GID=`id -g` \
+#    -e UID=`id -u` \
+#    bestwu/wechat

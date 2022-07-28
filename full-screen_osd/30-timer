@@ -1,0 +1,15 @@
+#!/bin/bash
+export XDG_RUNTIME_DIR="/run/user/1000";
+
+secs=$((25))
+while [ $secs -gt 0 ]; do
+   echo -ne "$secs" | osd_cat --pos bottom  --align center -d 1 --color black -f '-*-latin modern sans-bold-*-*-*-288-120-*-*-*-*-*-*' -O 3 -u white -o -450
+
+   # sleep 1
+   : $((secs--))
+done
+
+su -c "play '~/Audio/Android/Notifications/Material Adventures/Shuffle.ogg'" syeung
+
+exit 0
+#echo -ne "Go!" | osd_cat --pos bottom  --align center -d 1 --color black -f '-*-latin modern sans-bold-*-*-*-288-120-*-*-*-*-*-*' -O 3 -u white -o -450

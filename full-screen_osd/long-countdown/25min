@@ -1,0 +1,20 @@
+#!/bin/bash
+
+secs=$((3))
+while [ $secs -gt 0 ]; do
+   echo -ne "$secs" | osd_cat --pos bottom  --align center -d 1 --color black -f '-*-latin modern sans-bold-*-*-*-288-120-*-*-*-*-*-*' -O 3 -u white -o -450
+   : $((secs--))
+done
+
+echo -ne "Go!" | osd_cat --pos bottom  --align center -d 1 --color black -f '-*-latin modern sans-bold-*-*-*-288-120-*-*-*-*-*-*' -O 3 -u white -o -450
+
+secs=$((60*25))
+while [ $secs -gt 0 ]; do
+   min=$(($secs/60))
+   sec=$(($secs%60))
+   if [ $sec -eq 0 ]; then sec='00';fi
+    # echo "$min:$sec"
+    echo -ne "$min:$sec" | osd_cat --pos bottom  --align right -d 1 --color black -f '-*-latin modern sans-bold-*-*-*-144-120-*-*-*-*-*-*' -O 3 -u white -o -710
+   : $((secs--))
+done
+

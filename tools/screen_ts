@@ -1,0 +1,34 @@
+#!/bin/bash 
+# Dependencies: tesseract-ocr imagemagick scrot xsel
+
+#select tesseract_lang in eng chi_sim ;do break;done
+# quick language menu, add more if you need other languages.
+
+
+ask=`zenity --list --text="<big><big>Select Language</big></big>" --title="Language" --column="0" "Simplified Chinese" "English" --width=100 --height=150 --hide-header`
+
+if [ "$ask" == "Simplified Chinese" ]; then
+	tess_language="chi_sim"
+fi
+
+if [ "$ask" == "English" ]; then
+	tess_language="eng"
+fi
+
+echo "$tess_language"
+SCR_IMG=`mktemp`
+trap "rm $SCR_IMG*" EXIT
+
+scrot -s $SCR_IMG.png -q 100    
+# increase image quality with option -q from default 75 to 100
+echo "$SCR_IMG"
+mogrify -modulate 100,0 -resize 400% $SCR_IMG.png 
+#should increase detection rate
+
+tesseract -l "$tess_language" $SCR_IMG.png $SCR_IMG &> /dev/null
+
+cat $SCR_IMG.txt | xsel -bi
+
+# cat $SCR_IMG.txt
+
+exit

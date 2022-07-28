@@ -1,0 +1,54 @@
+#!/bin/bash
+# hourly chime, with toggle and adjustment script on tmp file
+# Run example:
+# ./chime
+# Change modes:
+# ./chime 0 # Turn Off
+# ./chime 1 # Turn On
+# ./chime swap # Toggle 
+
+# Chime can be setup in crontab, and can be run individually for diagnostics. 
+# Example or hourly chime from 0800 to 1800
+# 0 8-18 * * * .../chime
+
+# Shortcuts can be made to run 'chime swap'
+
+# Icon folder in 
+# /usr/share/icons/gnome/32x32/
+
+if [ "$1" == "swap" ]; then 
+	if [ $(cat /tmp/chime.tmp) -eq 0 ]; then
+		echo 1 > /tmp/chime.tmp
+		notify-send "Hourly Chime is On " -i "appointment"
+	else
+		echo 0 > /tmp/chime.tmp 
+		notify-send "Hourly Chime is Off " -i "appointment"
+	fi
+elif [ "$1" == "1" ]; then
+	notify-send "Hourly Chime is On " -i "appointment"
+	echo 1 > /tmp/chime.tmp
+elif [ "$1" == "0" ]; then
+	notify-send "Hourly Chime is Off" -i "appointment"
+	echo 0 > /tmp/chime.tmp 
+else
+	if ! test -f "/tmp/chime.tmp"; then
+		#echo "File doesn't exist"
+		touch /tmp/chime.tmp
+		echo 1 > /tmp/chime.tmp
+	else
+		if [ $(cat /tmp/chime.tmp) -eq 0 ]; then
+			exit 0
+		fi
+		#echo "proceeding with chime"
+	fi
+
+	notify-send "Hourly $(date +'%k') Chime" -i "appointment"
+	pick=$(($(( RANDOM % 3 ))+1))
+	curr=$(pactl list sinks | grep '^[[:space:]]Volume:' | \
+		    head -n $(( $SINK + 1 )) | tail -n 1 | sed -e 's,.* \([0-9][0-9]*\)%.*,\1,')
+	pactl -- set-sink-volume 0 100%
+	play /home/syeung/Programming/development/secondkbd/shortcut-scripts/hrly-chime/h5-headshot${pick}.mp3 > /dev/null 2>&1 
+	pactl -- set-sink-volume 0 $curr%
+fi
+exit 0
+

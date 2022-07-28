@@ -1,0 +1,6 @@
+#!/bin/bash
+
+# youtube-dl wrapper 
+# dependent on youtube-dl 
+
+proxychains /usr/local/bin/youtube-dl --write-sub --write-auto-sub --sub-lang=zh-Hans --recode-video=mkv https://www.youtube.com/watch\?v\=yYel5EQivEAroxychains /opt/youtube-dl-11132020/youtube-dl --write-sub --write-auto-sub --sub-lang=zh-Hans --recode-video=mkv $1

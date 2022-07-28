@@ -1,0 +1,34 @@
+#!/bin/bash 
+
+# Script to startup messy Chrom session after it was forcible closed and 
+# restore the last session automatically based on window location, using closely
+# mimic behavior as if you're manually doing it.
+
+# Capture output of Chromium windows, usually Personal, API and Frank
+
+#Start Chromium 
+
+#nohup /usr/bin/chromium-browser %U --proxy-server="socks5://localhost:1080" --proxy-bypass-list=10.223.192.55 --host-resolver-rules="MAP * ~NOTFOUND , EXCLUDE localhost, EXCLUDE 10.223.192.55"
+
+# Check if there's anything running currently
+# if [ "$(ps -ef | grep -i joplin | grep -v grep | wc -l)" -gt "0" ]; then
+# 	# Swap to workspace 10 (9)
+# 	xdotool set_desktop 6
+# else
+	xdotool set_desktop 6
+	#VirtualBox -style Fusion %U & 
+	/opt/joplin/Joplin-2.7.13.AppImage
+# fi
+
+sleep 0.3 
+
+chid=$(wmctrl -l | grep -i joplin | awk '{print $1}')
+
+
+# wmctrl -i -r $chid -e 0,0,1706,1440,853
+# wmctrl -r ":ACTIVE:" -e 0,1440,1092,1920,1068
+# wmctrl -r ":ACTIVE:" -e 0,2400,24,960,1068
+wmctrl -r ":ACTIVE:" -e 0,1440,1092,960,1068
+sleep 0.1
+wmctrl -i -r $chid -t 6
+

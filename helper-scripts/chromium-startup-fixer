@@ -1,0 +1,57 @@
+#!/bin/bash 
+
+# Script to startup messy Chrom session after it was forcible closed and 
+# restore the last session automatically based on window location, using closely
+# mimic behavior as if you're manually doing it.
+
+# Capture output of Chromium windows, usually Personal, API and Frank
+
+#Start Chromium 
+
+#nohup /usr/bin/chromium-browser %U --proxy-server="socks5://localhost:1080" --proxy-bypass-list=10.223.192.55 --host-resolver-rules="MAP * ~NOTFOUND , EXCLUDE localhost, EXCLUDE 10.223.192.55"
+
+sleep 1
+
+chid=($(wmctrl -l | grep Chromium  | awk '{print $1}'))
+
+# Window Position array
+winpos=(0 8 9)
+count=(0 1 2)
+
+
+for i in "${count[@]}"
+do
+	echo ${winpos[$i]}
+	echo ${chid[$i]}
+	# resize and set position 
+	wmctrl -i -r ${chid[$i]} -e 0,1440,25,1920,2135
+	# Send Window to correct location
+	wmctrl -i -r ${chid[$i]} -t ${winpos[$i]}
+done
+
+
+# manually go to each workspace and click specific spot
+# Do API and Frank first, then lastly personal
+# Restore button location:
+# X:2938 Y:190
+
+# API
+clickorder=(8 9 0)
+
+for i in "${clickorder[@]}"
+do
+	xdotool set_desktop $i
+	xdotool mousemove 3298 190 #2938
+	xdotool click 1
+	sleep 1
+done
+
+sleep 3
+
+# Post Launch fixer
+
+## mainchrome=($(wmctrl -l | grep Chromium  | awk '{print $1}'))
+## wmctrl -i -r ${mainchrome} -t 2
+## wmctrl -i -r ${mainchrome} -e 0,2400,1092,960,1068
+
+exit 0

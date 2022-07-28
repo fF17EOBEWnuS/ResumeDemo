@@ -1,0 +1,35 @@
+#!/bin/sh
+# Helper script to check if vm is running then save state if it is.
+
+# Parse current running vms 
+runningvms=$(/usr/bin/vboxmanage list runningvms)
+
+# Get current 
+curdesk=$(xdotool get_desktop)
+
+### Red Mines ### 
+$(echo $runningvms | grep -q redmines)
+if [ "$?" -ne "0" ]; then
+	/usr/bin/vboxmanage startvm "redmines" --type headless & # 2&>1 > /dev/null
+	#/usr/bin/vboxmanage controlvm "redmines" savestate & >/dev/null
+else
+	echo "redmines is already running"
+fi
+
+
+## Uncomment for Windows API Box
+
+#/usr/bin/xdotool set_desktop 8
+#
+#$(echo $runningvms | grep -q API > /dev/null )
+#if [ "$?" -ne "0" ]; then
+#	/usr/bin/vboxmanage startvm "API NVME" & 
+#	sleep 1.5
+#	#/usr/bin/vboxmanage controlvm "API NVME" savestate & >/dev/null
+#else
+#	echo "API is already running"
+#fi
+#
+#/usr/bin/xdotool set_desktop $curdesk
+
+exit 0

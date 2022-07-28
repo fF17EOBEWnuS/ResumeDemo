@@ -1,0 +1,122 @@
+#!/bin/bash
+
+sed -i 's/localhost/$1/1' /etc/hosts
+sed -i 's/localhost/$1/g' /etc/hostname
+
+#./openvpn-files/User-Setup.sh
+
+apt-get update
+apt-get install --yes --force-yes openvpn easy-rsa
+
+make-cadir ~/openvpn-ca
+mv ~/openvpn-files/vars ~/openvpn-ca/
+cd ~/openvpn-ca
+source vars
+
+
+./clean-all
+cp openssl-1.0.0.cnf openssl.cnf
+./build-ca --batch
+./build-key-server --batch server
+./build-dh
+openvpn --genkey --secret keys/ta.key
+
+# Generate Test client:
+#./build-key --batch test-client01
+
+# Copy source files 
+
+cd ~/openvpn-ca/keys
+sudo cp ca.crt server.crt server.key ta.key dh4096.pem /etc/openvpn
+
+# Copy openvpn configuration from built
+mv ~/openvpn-files/server.conf /etc/openvpn/server.conf
+
+# allow connections ipv4 
+sed -i '28 s/^#//' /etc/sysctl.conf
+# restart and load conf
+sysctl -p 
+# add firewall rules
+SHARK=$(ip route | grep default | awk '{print $5}')
+insert1="*nat"
+insert2=":POSTROUTING ACCEPT [0:0]"
+insert3="-A POSTROUTING -s 10.8.0.0/8 -o $SHARK -j MASQUERADE"
+insert4="COMMIT"
+insert5="-A ufw-before-forward -i tun0 -o tun0 -j DROP"
+
+sed -i "10a$insert1" /etc/ufw/before.rules
+sed -i "11a$insert2" /etc/ufw/before.rules
+sed -i "12a$insert3" /etc/ufw/before.rules
+sed -i "13a$insert4" /etc/ufw/before.rules
+
+# add firewall policy 
+sed -i '19 s/DROP/ACCEPT/' /etc/default/ufw
+
+sed -i '39,42 s/ACCEPT/DROP/g' /etc/ufw/before.rules
+
+sed -i "26a$insert5" /etc/ufw/before.rules
+# add to ufw policy open ports
+ufw allow 10443/udp
+
+# restart ufw
+ufw disable
+ufw --force enable
+
+# service setup for openvpn server
+systemctl start openvpn@server
+#systemctl status openvpn@server
+systemctl enable openvpn@server
+
+# create client creation setup
+mkdir -p ~/client-configs/files
+chmod 700 ~/client-configs/files
+
+# copy base from installer
+cp ~/openvpn-files/base.conf ~/client-configs/
+mv ~/openvpn-files/make_config.sh ~/client-configs/ 
+chmod 700 ~/client-configs/make_config.sh
+
+# need to change base address in base config
+tmp=$(ip -c a | grep inet| grep -v inet6 | grep -v '/8' | grep -v '/32' | awk '{print $2}')
+len=${#tmp}-3
+postproc="${tmp:0:$len}"
+IPADDR=$(echo $postproc | sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[mGK]//g" | tr -d '[:cntrl:]')
+sed -i "4 s/ip/$IPADDR/" ~/client-configs/base.conf
+
+# copy base-configuration files:
+mv ~/openvpn-files/mkclient ~/
+
+mkdir ~/output
+chown -R $User.$User ~/output
+
+mkdir ~/scripts
+mv ~/openvpn-files/restart-vpnserver.sh ~/scripts/
+
+# install dns server
+
+~/openvpn-files/dns-bind9-install.sh
+
+
+# Build Clients for personal
+cd ~
+./mkclient $User-m7
+./mkclient $User-r7ml
+./mkclient $User-s9p
+./mkclient $User-e5540
+./mkclient $User-s8
+./mkclient $User-nexus
+./mkclient sy-hp.ovpn
+./mkclient sy-p20pro.ovpn
+./mkclient sy-xiaomi.ovpn
+
+
+
+echo 'Cleaning up'
+
+
+rm -rf openvpn-files
+rm -rf vpnserver-setup.tar.gz
+echo 'Task Completed'
+echo "Please check the existing base config and ensure that the IP is correct"
+rm -rf openvpn-installer
+echo 'alias output="ls ~/output"' >> /root/.bashrc 

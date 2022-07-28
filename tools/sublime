@@ -1,0 +1,2 @@
+#!/bin/sh
+sudo -u $USer /usr/bin/unshare -n `/opt/sublime_text/sublime_text "$1"`

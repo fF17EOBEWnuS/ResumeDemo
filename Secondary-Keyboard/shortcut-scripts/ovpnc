@@ -1,0 +1,42 @@
+#!/bin/bash
+# Fast One button auto connect script
+# Icon folder in 
+# /usr/share/icons/gnome/32x32/
+
+# Lock file Check; Prevent double run
+
+if ! test -f "/tmp/ovpnc.tmp"; then
+	#echo "File doesn't exist"
+	touch /tmp/ovpnc.tmp
+else
+	exit 0
+fi
+
+
+. ~/.aliases
+output=$(ps -ef | grep openvpn | grep -v grep)
+
+if [ $(echo "$output" | wc -l) -lt 2 ]; then
+	notify-send "Connecting to VPN" -i "changes-prevent"
+	sudo openvpn --config /opt/openvpn-configs/default.ovpn >/dev/null &
+	disown $!
+	sleep 3;
+	if [ $(ps -ef | grep openvpn | grep -v grep | wc -l) -eq 2 ]; then
+		message="VPN Connected Successfully"
+		notify-send "VPN Connected Sucessfully" -i "network-wired"
+	else
+		notify-send "VPN failed with Errors" -i "gtk-dialog-error"
+	fi
+else
+	notify-send "Disconnecting..." -i "changes-allow"
+	sudo kill -s INT `ps -ef | grep openvpn | grep -v grep | grep -v sudo |  awk -F " " '{print $2}'` 
+	sleep 3;
+	test=$(timeout 2 ping -c 1 www.google.com)
+	if [ $? -eq 124 ]; then
+		notify-send "VPN disconnected Successfully" -i "network-wired-disconnected"
+	fi
+fi
+# cleanup
+rm /tmp/ovpnc.tmp		
+exit 0
+

@@ -1,0 +1,5 @@
+#!/bin/sh
+exo-open --launch TerminalEmulator;
+sleep 0.2
+wmctrl -i -a $(wmctrl -l | grep "Terminal" | tail -n 1 | cut -d ' ' -f1)
+exit 0

@@ -1,0 +1,27 @@
+#!/bin/bash
+
+# Icon folder in
+# /usr/share/icons/gnome/32x32/
+
+#notify-send "Alarm is set for $1" -i "appointment-soon"
+minute=$(date +%M)
+hr=$(date +%k)
+## raw minutes 
+now=$(($hr*60+$minute ))
+if [ $now -lt $1 ]; then
+	diff=$(($1-$now))
+else 
+	diff=$(($now-$1))
+fi
+sleep "${diff}m" 
+#echo "now is $now"
+#echo "difference is $diff"
+# Volume Adjustment to make volume loud 
+curr=$(pactl list sinks | grep '^[[:space:]]Volume:' | \
+	                    head -n $(( $SINK + 1 )) | tail -n 1 | sed -e 's,.* \([0-9][0-9]*\)%.*,\1,')
+pactl -- set-sink-volume 0 100%
+notify-send "Alarm!" -i "appointment"
+play ~/Programming/development/actkbd-secondkeybd/shortcut-scripts/alarm-sounds/standard.mp3 > /dev/null 2>&1 
+pactl -- set-sink-volume 0 $curr%
+
+exit 0 

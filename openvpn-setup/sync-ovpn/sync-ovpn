@@ -1,0 +1,12 @@
+#!/bin/bash
+
+server=$1
+path="/opt/openvpn-configs/vultr/${server}"
+
+if [ ! -d "$path" ]; then
+	# Folder doesn't exist
+	mkdir $path
+fi
+
+# Then do rsync
+rsync -ah -e 'ssh -p 3022' $server:~/output/ $path

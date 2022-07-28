@@ -1,0 +1,9 @@
+#/bin/sh
+increments=400
+curr=$(cat /sys/class/backlight/intel_backlight/brightness)
+#echo $curr
+
+if [ $curr -gt 300 ]; then
+	newbright=`expr $curr - $increments`
+	echo $newbright | sudo tee /sys/class/backlight/intel_backlight/brightness > /dev/null
+fi

@@ -1,0 +1,10 @@
+#!/bin/sh
+
+if [ -z "$1" ]
+then
+	numchar=16
+fi
+
+text=$(openssl rand -base64 29 | cut -c1-$numchar)
+echo $text | xsel -bi
+echo $text

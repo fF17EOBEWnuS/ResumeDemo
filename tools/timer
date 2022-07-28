@@ -1,0 +1,10 @@
+#!/bin/bash
+
+export XDG_RUNTIME_DIR="/run/user/1000";
+notify-send "Timer is set for $1" -i "appointment-soon"
+
+sleep $1 
+
+notify-send "Timer $1" -i "weather-few-clouds" 
+play ~/Programming/development/secondkbd/shortcut-scripts/alarm-sounds/standard.mp3
+exit 0

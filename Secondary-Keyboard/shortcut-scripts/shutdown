@@ -1,0 +1,28 @@
+#!/bin/bash
+
+# Selectable Menu using Zenity for Reboot and Logoff
+# Reference
+# https://askubuntu.com/questions/983418/zenity-multi-choice-from-keyboard
+
+. ~/.aliases
+
+ask=`zenity --list --text="<big><big>Power Options</big></big>" --title="Power Options" --column="0" "Reboot" "Shutdown" --width=100 --height=150 --hide-header`
+
+if [ "$ask" == "Reboot" ]; then
+	findkill chromium-browser
+	sudo reboot
+fi
+
+if [ "$ask" == "Shutdown" ]; then
+	findkill chromium-browser
+	sudo poweroff
+fi
+
+#if [ "$ask" == "OPTION3" ]; then
+#	#COMMAND_FOR_OPTION3
+#fi
+#
+#if [ "$ask" == "OPTION4" ]; then
+#	#COMMAND_FOR_OPTION4
+#fi
+exit 0

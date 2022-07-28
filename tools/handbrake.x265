@@ -1,0 +1,7 @@
+#!/bin/bash
+
+name="$1"
+rawname=$(echo "$name" | cut -d'.' -f1)
+#echo $rawname
+
+/usr/bin/HandBrakeCLI -i $1 -o $2/$rawname.m4v -e nvenc_h265 -q 22 -B 160

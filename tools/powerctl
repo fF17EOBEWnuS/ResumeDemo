@@ -1,0 +1,37 @@
+#!/bin/bash
+# Full shutdown script
+
+~/.scripts/findkill.sh chrom 2&>1 /dev/null
+~/.scripts/findkill.sh sublime 2&>1 /dev/null
+~/.scripts/findkill.sh thinkorswim 2&>1 /dev/null
+# sudo killall chrome
+# sudo killall sublime
+# sudo killall firefox
+# sudo killall thinkorswim
+# sudo killall slack
+~/.scripts/findkill.sh firefox 2&>1 /dev/null
+~/.scripts/findkill.sh slack 2&>1 /dev/null
+
+
+
+#Save and close all vm
+~/.scripts/save-running-vms
+
+# sleep 15
+
+secs=$((5))
+while [ $secs -gt 0 ]; do
+	   echo -ne "$secs\033[0K\r"
+	   sleep 1
+	   : $((secs--))
+   done
+
+
+if [[ "$1" == "poweroff" ]]; then
+	# Empty do nothing
+	sudo poweroff
+elif [[ "$1" == "reboot" ]]; then
+	sudo reboot
+fi
+
+

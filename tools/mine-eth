@@ -1,0 +1,1 @@
+sudo ~/Documents/Mining/test/ethminer -U -P stratum1+tcp://sp_colorado9@cn.sparkpool.com:3335

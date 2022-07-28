@@ -1,0 +1,24 @@
+#!/bin/sh
+# Helper script to check if vm is running then save state if it is.
+
+# Parse current running vms 
+running=$(ps -ef | grep slack)
+
+# Get current 
+curdesk=$(xdotool get_desktop)
+
+/usr/bin/xdotool set_desktop 8
+
+### Red Mines ### 
+$(echo $running | grep -q slack)
+if [ "$?" -eq "0" ]; then
+	#/usr/bin/vboxmanage startvm "redmines" --type headless & 2&>1 > /dev/null
+	/usr/bin/slack &
+	sleep 1.5
+else
+	echo "Slack is already running"
+fi
+
+/usr/bin/xdotool set_desktop $curdesk
+
+exit 0

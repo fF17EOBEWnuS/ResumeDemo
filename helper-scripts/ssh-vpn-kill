@@ -1,0 +1,4 @@
+#!/bin/sh
+
+kill -9 $(ps -ef | grep -v grep | grep 38080 | awk '{print $2}')
+exit 0

@@ -1,0 +1,2 @@
+#!/bin/bash
+sudo rm -rf /root/docker_instances/mongo

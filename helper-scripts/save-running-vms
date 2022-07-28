@@ -1,0 +1,43 @@
+#!/bin/sh
+# Helper script to check if vm is running then save state if it is.
+
+# Parse current running vms 
+runningvms=$(/usr/bin/vboxmanage list runningvms)
+
+$(echo $runningvms | grep -q redmines)
+if [ "$?" -eq "0" ]; then
+	/usr/bin/vboxmanage controlvm "redmines" savestate & 2>&1 >/dev/null
+else
+	echo "redmines is not running"
+fi
+
+$(echo $runningvms | grep -q NVME > /dev/null )
+if [ "$?" -eq "0" ]; then
+	/usr/bin/vboxmanage controlvm "API NVME" savestate 
+else
+	echo "API is not running"
+fi
+
+$(echo $runningvms | grep -q wechat_windows > /dev/null )
+if [ "$?" -eq "0" ]; then
+	/usr/bin/vboxmanage controlvm "wechat_windows" savestate 
+else
+	echo "wechat is not running"
+fi
+
+$(echo $runningvms | grep -q api-xubuntu-2022 > /dev/null )
+if [ "$?" -eq "0" ]; then
+	/usr/bin/vboxmanage controlvm "api-xubuntu-2022" savestate 
+else
+	echo "api xubuntu is not running"
+fi
+
+$(echo $runningvms | grep -q API-2022 > /dev/null )
+if [ "$?" -eq "0" ]; then
+	/usr/bin/vboxmanage controlvm "API-2022" savestate 
+else
+	echo "API 2022 is not running"
+fi
+
+
+exit 0

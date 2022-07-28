@@ -1,0 +1,19 @@
+#!/bin/bash
+filename=$(date +%m%d%Y).exr
+
+#echo $filename
+if [[ "$1" == "log" ]]; then 
+	ls ~/.exercise
+elif [[ "$1" == "today" ]]; then
+	cat ~/.exercise/$filename
+elif [[ "$1" == "dash" ]]; then
+	vi ~/.exercise
+elif [[ $1 == "add" ]]; then
+	if [ ! -f ~/.exercise/$filename ]; then 
+		echo "no file exist"
+		touch ~/.exercise/$filename
+	fi
+	echo $2 >> ~/.exercise/$filename
+else
+	vi ~/.exercise/$filename
+fi

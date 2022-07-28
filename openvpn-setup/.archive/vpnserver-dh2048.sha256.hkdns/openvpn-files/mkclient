@@ -1,0 +1,14 @@
+#!/bin/bash
+
+cd ~/openvpn-ca
+source vars
+
+./build-key --batch $1
+cd ~/client-configs
+./make_config.sh $1
+
+cp ~/client-configs/files/$1.ovpn /home/syeung/output
+chown syeung:syeung /home/syeung/output/$1.ovpn
+
+cd
+exit 0

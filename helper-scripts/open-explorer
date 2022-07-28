@@ -1,0 +1,4 @@
+#exo-open --launch FileManager --working-directory ~ 
+thunar ~
+sleep 0.01
+wmctrl -i -a $(wmctrl -l | grep "File Manager" | tail -n 1 | cut -d ' ' -f1)

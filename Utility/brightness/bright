@@ -1,0 +1,17 @@
+#!/bin/bash
+increments=900
+curr=$(cat /sys/class/backlight/intel_backlight/brightness)
+#echo $curr
+if [[ "$1" == "inc" ]]; then 
+	if [ $curr -lt 7500 ]; then
+		newbright=`expr $curr + $increments`
+		echo $newbright | sudo tee /sys/class/backlight/intel_backlight/brightness > /dev/null
+	fi
+else
+	if [ $curr -gt 300 ]; then
+		newbright=`expr $curr - $increments`
+		echo $newbright | sudo tee /sys/class/backlight/intel_backlight/brightness > /dev/null
+	fi
+fi
+cat /sys/class/backlight/intel_backlight/brightness
+

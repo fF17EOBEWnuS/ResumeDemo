@@ -1,0 +1,14 @@
+/usr/bin/killall binance
+
+proxychains curl https://ftp.binance.com/electron-desktop/linux/production/binance-amd64-linux.deb -o /tmp/binance.ins
+
+if [ $? ]; then
+	sudo dpkg -i /tmp/binance.ins
+	## Clean up
+	rm /tmp/binance.ins
+fi
+
+if [ $? ]; then 
+	/usr/bin/binance
+fi
+
